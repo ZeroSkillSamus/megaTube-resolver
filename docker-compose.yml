@@ -1,0 +1,183 @@
+services:
+  nginx:
+    image: luslucifer490587/vidjoy-nginx:latest
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '443:443'
+    networks:
+      - vidjoy
+    deploy:
+      update_config:
+        parallelism: 2
+        delay: 10s
+        order: start-first
+        failure_action: rollback
+
+  proxy-server:
+    image: luslucifer490587/vidjoy-proxy-server:latest
+    # expose:
+    #   - 80
+    networks:
+      - vidjoy
+    restart: unless-stopped
+    environment:
+      - HOST=0.0.0.0
+      - PORT=80
+      - PROTOCOL=https
+      - CORSANYWHERE_WHITELIST=https://moviekex.com,https://developer-tools.jwplayer.com,https://yestream.vidsrc.nl
+    command: "npm run start"
+    deploy:
+      replicas: 6
+      update_config:
+        parallelism: 1
+        delay: 5s
+        order: start-first
+
+  server:
+    image: luslucifer490587/vidjoy-server:latest
+    expose:
+      - 80
+    networks:
+      - vidjoy
+    restart: unless-stopped
+    environment:
+      - HOST=0.0.0.0
+      - PORT=80
+      - PROTOCOL=https
+    command: "npm run start"
+    deploy:
+      replicas: 4
+      update_config:
+        parallelism: 2
+        delay: 10s
+        order: start-first
+
+  frontend:
+    image: luslucifer490587/vidjoy-frontend:latest
+    restart: unless-stopped
+    expose:
+      - 5173
+    networks:
+      - vidjoy
+    ports:
+      - 5170:3000
+    environment:
+      - PROTOCOL=http
+      - TMDB_KEY=${TMDB_KEY}
+    command: "npm run start"
+    deploy:
+      replicas: 4
+      update_config:
+        parallelism: 1
+        delay: 10s
+        order: start-first
+
+  sub:
+    image: luslucifer490587/vidjoy-sub:latest
+    restart: always
+    networks:
+      - vidjoy
+    environment:
+      - PORT=80
+      - TMDB_KEY=${TMDB_KEY}
+      - PROTOCOL=https
+    command: "bun run start"
+    deploy:
+      update_config:
+        parallelism: 1
+        delay: 10s
+        order: start-first
+
+  thumb:
+    image: luslucifer490587/vidjoy-thumb:latest
+    restart: always
+    networks:
+      - vidjoy
+    environment:
+      - PORT=80
+      - TMDB_KEY=${TMDB_KEY}
+      - PROTOCOL=https
+    command: "npm run start"
+    deploy:
+      update_config:
+        parallelism: 1
+        delay: 10s
+        order: start-first
+
+  redis:
+    image: redis/redis-stack:latest
+    expose:
+      - 8001
+      - 6379
+    networks:
+      - vidjoy
+    volumes:
+      - ./snapshots:/data
+    deploy:
+      update_config:
+        parallelism: 2
+        delay: 10s
+
+  vidjoy-webapp:
+    image: luslucifer490587/vidjoy-webapp
+    restart: always
+    ports:
+      - 3002:3000
+    environment:
+      DATABASE_URL: "prisma://accelerate.prisma-data.net/?api_key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcGlfa2V5IjoiM2UxNzFmNTgtZGExZC00ZThlLThjOTctZmMyOGM0NDJlZjU4IiwidGVuYW50X2lkIjoiZDg5YTg0YWZkNDY5NjQ0MTE5ODU5ODhhNGI0M2Q5YjM2ODU0NzI4NDE5NzhjODUwZTY4MDRlZTFlNTkzNWVhMiIsImludGVybmFsX3NlY3JldCI6IjZkOWY5OTQ5LTIwYTMtNDdjOS1iNWNhLTg3YzVhYjBmNTUwNiJ9.j1oKCxi_iuqAH9rvUKMsZWY44t3ad7cXva_thV5YKnU"
+      DIRECT_URL: "postgresql://postgres.rqtbzfrmpyxrluemnqxk:DzPaAJMhPyEj7J3G@aws-0-ap-south-1.pooler.supabase.com:5432/postgres"
+      KINDE_POST_LOGIN_REDIRECT_URL: "https://moviekex.online/dashboard"
+      KINDE_POST_LOGOUT_REDIRECT_URL: "https://moviekex.online/"
+      KINDE_SITE_URL: "https://moviekex.online/"
+      NEXT_PUBLIC_BASE_URL: "https://moviekex.online/"
+      TMDB_API: "f6f2a9e9b0f5eed81b4cabe35d5a9c1b"
+      TMDB_BASE: "https://api.themoviedb.org/3"
+      KINDE_CLIENT_ID: "7c3186f9627147f9a5ffb9d248bc3b43"
+      KINDE_CLIENT_SECRET: "MOTUC6dpsrNr1qHCdZeYFOuT1txfhrcLhSB7HpHl8wg8hjZUFtE9q"
+      NEXT_PUBLIC_AD_SCRIPT: "<YOUR AD SCRIPT TO DISPLAY ADS>"
+      KINDE_ISSUER_URL: "https://vidjoy.kinde.com"
+    networks:
+      - vidjoy
+    command: 'npm run start'
+    deploy:
+      replicas: 2
+      update_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        order: start-first
+  
+  shepherd:
+    image: containrrr/shepherd
+    environment:
+      TZ: 'US/Eastern'
+      SLEEP_TIME: '10m'
+      FILTER_SERVICES: ''
+      VERBOSE: 'true'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+  # portainer:
+  #   image: portainer/portainer-ce:2.21.4
+  #   container_name: portainer
+  #   restart: always
+  #   ports:
+  #     - "8000:8000"
+  #     - "9443:9443"
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+     
+  #   networks:
+  #     - vidjoy
+  #   deploy:
+  #     update_config:
+  #       parallelism: 1
+  #       delay: 10s
+
+networks:
+  vidjoy:
+    driver: overlay

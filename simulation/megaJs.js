@@ -20151,7 +20151,7 @@
       };
     }
   };
-  const k = async () => {
+  const k = async () => { // 
     var B9 = N();
     var BB = (document && document.getElementById && document.getElementById("9cbc1d63ef40c79")) != null;
     var Bm = document && document.createElement("canvas");
@@ -20391,7 +20391,7 @@
       var Bq = d(window);
       var BH = "/embed-1/ajax/e-1/getSources?id=" + window.pid + "&v=" + Bh + "&h=" + BH + "&b=" + BJ;
       
-      console.log(BH)
+      // console.log(BH)
       const Bw = {
           sources: [],
           tracks: []

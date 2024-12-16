@@ -9,7 +9,7 @@ puppeteer.use(StealthPlugin());
 async function megatubeScraperHeadless(url) {
     const browser = await puppeteer.launch({
         headless: false,
-        // devtools: false,
+        devtools: false,
         args: [
             '--no-sandbox',
             '--disable-setuid-sandbox',
@@ -36,7 +36,7 @@ async function megatubeScraperHeadless(url) {
         const requestUrl = request.url();
         // console.log('Request URL:', requestUrl);
 
-        if (requestUrl.includes('.js') || requestUrl.includes('google') || requestUrl.includes('css')) {
+        if (requestUrl.includes('e1-player.min.js') || requestUrl.includes('google') ) {
             // console.log('Blocking request to:', requestUrl);
             request.abort();
         } else {
@@ -79,7 +79,7 @@ async function megatubeScraperHeadless(url) {
         setTimeout(async () => {
             await browser.close();
             reject(new Error('Timeout waiting for sources'));
-        }, 10000); // 10 seconds timeout
+        }, 100000000); // 10 seconds timeout
     });
 }
 
@@ -87,4 +87,4 @@ async function megatubeScraperHeadless(url) {
 module.exports = megatubeScraperHeadless;
 
 // Example usage
-megatubeScraperHeadless('https://megacloud.tube/embed-1/e-1/3sabuIiRfkFf?z=').then(e => console.log).catch(console.error);
+megatubeScraperHeadless('https://megacloud.tv/embed-2/e-1/P9MZKlDdCGFi?k=1&autoPlay=1&oa=0&asi=1').then(e => console.log).catch(console.error);
