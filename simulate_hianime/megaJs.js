@@ -16625,13 +16625,6 @@
 const O = new MobileDetect(window.navigator.userAgent);
 const B = new URLSearchParams(window.location.search);
 if (!O.match("playstation|xbox|smart-tv|smarttv") && O.mobile() === null && !B.get("_debug")) {
-  // devtoolsDetector.addListener(function (C6) {
-  //   if (C6) {
-  //     window.location.reload();
-  //     window.parent.location.reload();
-  //   }
-  // });
-  // devtoolsDetector.launch();
 }
 (function (C6, C7) {
   if (typeof exports == "object") {

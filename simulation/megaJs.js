@@ -16630,15 +16630,6 @@
   });
   const H = new MobileDetect(window.navigator.userAgent);
   const q = new URLSearchParams(window.location.search);
-  if (!H.match("playstation|xbox|smart-tv|smarttv") && H.mobile() === null && !q.get("_debug")) {
-    devtoolsDetector.addListener(function (B9) {
-      if (B9) {
-        // window.location.reload();
-        // window.parent.location.reload();
-      }
-    });
-    // devtoolsDetector.launch();
-  }
   (function (B9, BB) {
     if (typeof exports == "object") {
       module.exports = exports = BB();
