@@ -25,7 +25,7 @@ node simulation/megaScraper.js
 
 ## Support
 
-You can reach out and get support on Discord: [Join here](https://discord.gg/aAPmfsRD).
+You can reach out and get support on Discord: [Join here](https://discord.gg/4cq9vkerA3).
 
 ## To-Do List
 
