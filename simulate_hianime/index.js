@@ -15,7 +15,6 @@ puppeteer.use(StealthPlugin())
 
 async function fetch_video_src(episode_id) {
 	const url = new URL(`https://hianime.to/ajax/v2/episode/sources?id=${episode_id}`)
-	console.log(url)
 	try {
 		let response = await axios.get(url, {
 			headers: {
