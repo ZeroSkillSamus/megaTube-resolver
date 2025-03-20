@@ -44,14 +44,19 @@ async function fetch_qualities(default_url) {
 	//const test = 'RESOLUTION=1920x1080,FRAME-RATE=23.974,CODECS'
 	let iframeLinks = []
 	try {
-		let response = await axios.get(default_url)
+		let response = await axios.get(default_url, {
+			headers: {
+				'User-Agent':
+					'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123.0',
+				Referer: 'https://megacloud.club/',
+			},
+		})
 		let resolutions = response.data.match(/(RESOLUTION=)(.*)(\s*?)(\s*.*)/g)
 		resolutions?.forEach((str) => {
 			const index = default_url.lastIndexOf('/')
 			const resolution = str.split(',')[0].split('x')[1]
 			const top_half = default_url.slice(0, index)
 			const full_url = `${top_half}/${str.split('\n')[1]}`
-			console.log(str.split('\n')[1])
 			if (str.split('\n')[1].includes('index'))
 				iframeLinks.push({
 					is_m3u8: full_url.includes('.m3u8'),
@@ -87,7 +92,7 @@ async function megatubeScraperHeadless(url) {
 	const page = await browser.newPage()
 
 	await page.setExtraHTTPHeaders({
-		Referer: "https://hianime.to", // Referer seems to have changed 
+		Referer: url,
 	})
 
 	await page.setViewport({ width: 1366, height: 768 })
@@ -124,6 +129,7 @@ async function megatubeScraperHeadless(url) {
 				for (const arg of args) {
 					const value = await arg.jsonValue()
 					//console.log(value)
+
 					if (typeof value === 'object' && value.sources !== undefined) {
 						// console.log('Found sources:', value);
 						await browser.close()
