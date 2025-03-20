@@ -74,7 +74,8 @@ async function fetch_qualities(default_url) {
 
 async function megatubeScraperHeadless(url) {
 	const browser = await puppeteer.launch({
-		headless: false,
+		headless: true,
+		executablePath: '/usr/bin/chromium-browser',
 		devtools: false,
 		args: [
 			'--no-sandbox',
