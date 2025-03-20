@@ -92,7 +92,7 @@ async function megatubeScraperHeadless(url) {
 	const page = await browser.newPage()
 
 	await page.setExtraHTTPHeaders({
-		Referer: url,
+		Referer: 'https://hianime.to',
 	})
 
 	await page.setViewport({ width: 1366, height: 768 })
