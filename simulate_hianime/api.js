@@ -5,7 +5,7 @@ import bodyParser from "body-parser";
 import fetch_video_src from "./index.js";
 
 const HIANIME = express();
-const port = 3000;
+const port = 3069;
 
 HIANIME.listen(port, async () => {
   console.log(`Opening On Port: ${port}`);
