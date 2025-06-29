@@ -59,7 +59,12 @@ async function fetch_video_src(episode_id) {
     let decrypted = CryptoJS.AES.decrypt(source, key);
     let extract = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8));
     let m3u8_links = await fetch_qualities(extract[0].file);
+    let headers = {
+      Referer: "https://megacloud.blog/",
+      Origin: "https://megacloud.blog",
+    };
     return {
+      headers: headers,
       m3u8_links: m3u8_links,
       tracks: sourceResponse.data.tracks,
       intro: sourceResponse.data.intro,
