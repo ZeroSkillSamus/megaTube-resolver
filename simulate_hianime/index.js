@@ -111,7 +111,7 @@ async function fetch_qualities(default_url) {
       if (str.split("\n")[1].includes("index"))
         iframeLinks.push({
           is_m3u8: full_url.includes(".m3u8"),
-          quality: resolution,
+          quality: `${resolution}p`,
           url: full_url,
         });
     });
